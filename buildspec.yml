@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Installing dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Building the Angular app...
+      - npm run build 
+  post_build:
+    commands:
+      - echo Building the Docker image...
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j3q6m8n2
+      - REPOSITORY_URI=public.ecr.aws/j3q6m8n2/angularlb
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - docker build -t $REPOSITORY_URI:latest .
+      - echo Logging in to Amazon ECR...
+      - echo Pushing the Docker image to Amazon ECR...
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
