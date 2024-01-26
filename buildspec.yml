@@ -7,16 +7,22 @@ phases:
     commands:
       - echo Installing dependencies...
       - npm install
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j3q6m8n2
+      - REPOSITORY_URI=public.ecr.aws/j3q6m8n2/angularlb
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+
   build:
     commands:
       - echo Building the Angular app...
       - npm run build -- --prod
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo Building the Docker image...
-      - docker build -t angularlb .
-      - echo Logging in to Amazon ECR...
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j3q6m8n2
+      - echo Pushing the Docker images...
       - echo Pushing the Docker image to Amazon ECR...
-      - docker tag angularlb:latest public.ecr.aws/j3q6m8n2/angularlb:latest
-      - docker push public.ecr.aws/j3q6m8n2/angularlb:latest
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - printf '[{"name”:"__ECS_CONTAINER_NAME__","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
