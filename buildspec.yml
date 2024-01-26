@@ -14,8 +14,8 @@ phases:
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j3q6m8n2
       - REPOSITORY_URI=public.ecr.aws/j3q6m8n2/angularlb
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker build -t  public.ecr.aws/j3q6m8n2/angularlb:latest .
+      - docker tag  public.ecr.aws/j3q6m8n2/angularlb:latest  public.ecr.aws/j3q6m8n2/angularlb:$IMAGE_TAG
 
   post_build:
     commands:
