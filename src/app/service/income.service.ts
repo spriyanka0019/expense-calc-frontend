@@ -13,7 +13,7 @@ export class IncomeService {
 
 
     // private apiServerUrl = window.location.origin;
-    private apiServerUrl = 'http://lb-spring-267487076.us-east-2.elb.amazonaws.com';
+    private apiServerUrl = 'http://lb-spring-247160978.us-east-2.elb.amazonaws.com';
 
     constructor(private http: HttpClient){
     }

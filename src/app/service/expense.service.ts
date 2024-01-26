@@ -11,7 +11,7 @@ import { environments } from './environment.service';
 export class ExpenseService{
     // private apiServerUrl = environments.API_BASE
 
-    private apiServerUrl = 'http://lb-spring-267487076.us-east-2.elb.amazonaws.com';
+    private apiServerUrl = 'http://lb-spring-247160978.us-east-2.elb.amazonaws.com';
 
     // private apiServerUrl = window.location.origin;
  
