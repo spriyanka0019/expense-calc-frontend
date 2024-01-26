@@ -10,18 +10,13 @@ phases:
   build:
     commands:
       - echo Building the Angular app...
-      - npm run build 
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j3q6m8n2
-      - REPOSITORY_URI=public.ecr.aws/j3q6m8n2/angularlb
-      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
-      - docker build -t  public.ecr.aws/j3q6m8n2/angularlb:latest .
-      - docker tag  public.ecr.aws/j3q6m8n2/angularlb:latest  public.ecr.aws/j3q6m8n2/angularlb:$IMAGE_TAG
-
+      - npm run build -- --prod
   post_build:
     commands:
       - echo Building the Docker image...
+      - docker build -t angularlb .
       - echo Logging in to Amazon ECR...
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j3q6m8n2
       - echo Pushing the Docker image to Amazon ECR...
+      - docker tag angularlb:latest public.ecr.aws/j3q6m8n2/angularlb:latest
       - docker push public.ecr.aws/j3q6m8n2/angularlb:latest
-      - DOCKER_CONTAINER_NAME=angular-demo-ecr
-      - echo $DOCKER_CONTAINER_NAME
