@@ -28,11 +28,4 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
        # Give your container name
       - DOCKER_CONTAINER_NAME=angular-build-demo
-      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - echo $DOCKER_CONTAINER_NAME
-      - echo Writing image definitions file...
-      - cat imagedefinitions.json 
-
-artifacts:
-files: 
-  - imagedefinitions.json
+      - printf '[{"name”:"__ECS_CONTAINER_NAME__","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
