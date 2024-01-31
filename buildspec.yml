@@ -29,3 +29,6 @@ phases:
        # Give your container name
       - DOCKER_CONTAINER_NAME=angular-build-demo
       - printf '[{"name”:"__ECS_CONTAINER_NAME__","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+  files: imagedefinitions.json
